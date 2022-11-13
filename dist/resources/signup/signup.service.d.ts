@@ -8,4 +8,5 @@ export declare class SignupService {
     signupStep2(dto: SignupStep2Dto): Promise<import(".prisma/client").User>;
     getUserByEmail(email: string): Promise<import(".prisma/client").User>;
     getUserByWallet(wallet: string): Promise<import(".prisma/client").User>;
+    getUserByCpf(cpf: string): Promise<import(".prisma/client").User>;
 }

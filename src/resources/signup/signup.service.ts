@@ -61,4 +61,16 @@ export class SignupService {
       },
     });
   }
+
+  /**
+   * Puxa um usuário por CPF
+   * @param cpf
+   */
+  async getUserByCpf(cpf: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        cpf,
+      },
+    });
+  }
 }

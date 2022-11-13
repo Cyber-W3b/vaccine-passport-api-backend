@@ -55,6 +55,13 @@ let SignupService = class SignupService {
             },
         });
     }
+    async getUserByCpf(cpf) {
+        return this.prisma.user.findFirst({
+            where: {
+                cpf,
+            },
+        });
+    }
 };
 SignupService = __decorate([
     (0, common_1.Injectable)(),
