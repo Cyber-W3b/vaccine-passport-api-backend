@@ -10,12 +10,13 @@ exports.SignupModule = void 0;
 const common_1 = require("@nestjs/common");
 const signup_service_1 = require("./signup.service");
 const signup_controller_1 = require("./signup.controller");
+const prisma_service_1 = require("../../prisma.service");
 let SignupModule = class SignupModule {
 };
 SignupModule = __decorate([
     (0, common_1.Module)({
         controllers: [signup_controller_1.SignupController],
-        providers: [signup_service_1.SignupService]
+        providers: [signup_service_1.SignupService, prisma_service_1.PrismaService],
     })
 ], SignupModule);
 exports.SignupModule = SignupModule;
