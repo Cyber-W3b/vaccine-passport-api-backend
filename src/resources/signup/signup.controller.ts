@@ -15,7 +15,8 @@ export class SignupController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Usuário pendente de cadastro criado com êxito',
+    description:
+      'Usuário pendente de cadastro criado com êxito. Ou usuário existe, mas ainda está pendente de cadastro.',
     type: User,
   })
   @ApiResponse({
@@ -24,7 +25,7 @@ export class SignupController {
   })
   @ApiResponse({
     status: 409,
-    description: 'Wallet ou e-mail já cadastrados',
+    description: 'Wallet ou e-mail já cadastrados e já completaram o cadastro.',
   })
   @Post('step1')
   async signupStep1(@Body() body: SignupStep1Dto) {
@@ -32,6 +33,14 @@ export class SignupController {
     const userByWallet = await this.signupService.getUserByWallet(body.wallet);
 
     if (userByEmail || userByWallet) {
+      if (userByWallet && userByWallet.completed === false) {
+        return userByWallet;
+      }
+
+      if (userByEmail && userByEmail.completed === false) {
+        return userByEmail;
+      }
+
       return new HttpException('Wallet ou e-mail já cadastrados', 409);
     }
     return this.signupService.signupStep1(body);
