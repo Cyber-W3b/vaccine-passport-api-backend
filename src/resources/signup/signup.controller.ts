@@ -3,6 +3,7 @@ import { SignupService } from './signup.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SignupStep1Dto } from './dto/signup-step1.dto';
 import { User } from '../../entities/user.entity';
+import { SignupStep2Dto } from './dto/signup-step2.dto';
 
 @Controller('signup')
 @ApiTags('Cadastro')
@@ -34,5 +35,40 @@ export class SignupController {
       return new HttpException('Wallet ou e-mail já cadastrados', 409);
     }
     return this.signupService.signupStep1(body);
+  }
+
+  @ApiOperation({
+    summary: 'Step 2 - Finaliza o cadastro de um usuário',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuário atualizado com êxito - podendo fazer login depois',
+    type: User,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Dados de cadastro inválidos',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuário com a Wallet inexistente',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Usuário já tem cadastro completo',
+  })
+  @Post('step2')
+  async signupStep2(@Body() body: SignupStep2Dto) {
+    const user = await this.signupService.getUserByWallet(body.wallet);
+
+    if (!user) {
+      return new HttpException('Usuário com a Wallet inexistente', 404);
+    }
+
+    if (user.completed) {
+      return new HttpException('Usuário já cadastrado', 409);
+    }
+
+    return this.signupService.signupStep2(body);
   }
 }

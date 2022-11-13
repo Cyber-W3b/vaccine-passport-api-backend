@@ -18,6 +18,7 @@ const signup_service_1 = require("./signup.service");
 const swagger_1 = require("@nestjs/swagger");
 const signup_step1_dto_1 = require("./dto/signup-step1.dto");
 const user_entity_1 = require("../../entities/user.entity");
+const signup_step2_dto_1 = require("./dto/signup-step2.dto");
 let SignupController = class SignupController {
     constructor(signupService) {
         this.signupService = signupService;
@@ -29,6 +30,16 @@ let SignupController = class SignupController {
             return new common_1.HttpException('Wallet ou e-mail já cadastrados', 409);
         }
         return this.signupService.signupStep1(body);
+    }
+    async signupStep2(body) {
+        const user = await this.signupService.getUserByWallet(body.wallet);
+        if (!user) {
+            return new common_1.HttpException('Usuário com a Wallet inexistente', 404);
+        }
+        if (user.completed) {
+            return new common_1.HttpException('Usuário já cadastrado', 409);
+        }
+        return this.signupService.signupStep2(body);
     }
 };
 __decorate([
@@ -54,6 +65,33 @@ __decorate([
     __metadata("design:paramtypes", [signup_step1_dto_1.SignupStep1Dto]),
     __metadata("design:returntype", Promise)
 ], SignupController.prototype, "signupStep1", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Step 2 - Finaliza o cadastro de um usuário',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Usuário atualizado com êxito - podendo fazer login depois',
+        type: user_entity_1.User,
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 400,
+        description: 'Dados de cadastro inválidos',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 404,
+        description: 'Usuário com a Wallet inexistente',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 409,
+        description: 'Usuário já tem cadastro completo',
+    }),
+    (0, common_1.Post)('step2'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [signup_step2_dto_1.SignupStep2Dto]),
+    __metadata("design:returntype", Promise)
+], SignupController.prototype, "signupStep2", null);
 SignupController = __decorate([
     (0, common_1.Controller)('signup'),
     (0, swagger_1.ApiTags)('Cadastro'),

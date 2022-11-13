@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { SignupStep1Dto } from './dto/signup-step1.dto';
+import { SignupStep2Dto } from './dto/signup-step2.dto';
 
 @Injectable()
 export class SignupService {
@@ -15,6 +16,24 @@ export class SignupService {
       data: {
         ...dto,
         completed: false,
+      },
+    });
+  }
+
+  /**
+   * Faz a atualização do cadastro de um usuário de cadastro pendente
+   * @param dto
+   */
+  async signupStep2(dto: SignupStep2Dto) {
+    const { wallet, ...data } = dto;
+
+    return this.prisma.user.update({
+      where: {
+        wallet,
+      },
+      data: {
+        completed: true,
+        ...data,
       },
     });
   }
