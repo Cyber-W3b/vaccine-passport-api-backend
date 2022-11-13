@@ -64,7 +64,8 @@ export class SignupController {
   })
   @ApiResponse({
     status: 409,
-    description: 'Usuário já tem cadastro completo',
+    description:
+      'Usuário já tem cadastro completo ou já existe um cadastro com mesmo CPF',
   })
   @Post('step2')
   async signupStep2(@Body() body: SignupStep2Dto) {
@@ -76,6 +77,12 @@ export class SignupController {
 
     if (user.completed) {
       return new HttpException('Usuário já cadastrado', 409);
+    }
+
+    const userByCpf = await this.signupService.getUserByCpf(body.cpf);
+
+    if (userByCpf) {
+      return new HttpException('CPF já cadastrado', 409);
     }
 
     return this.signupService.signupStep2(body);

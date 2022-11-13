@@ -45,6 +45,10 @@ let SignupController = class SignupController {
         if (user.completed) {
             return new common_1.HttpException('Usuário já cadastrado', 409);
         }
+        const userByCpf = await this.signupService.getUserByCpf(body.cpf);
+        if (userByCpf) {
+            return new common_1.HttpException('CPF já cadastrado', 409);
+        }
         return this.signupService.signupStep2(body);
     }
 };
@@ -90,7 +94,7 @@ __decorate([
     }),
     (0, swagger_1.ApiResponse)({
         status: 409,
-        description: 'Usuário já tem cadastro completo',
+        description: 'Usuário já tem cadastro completo ou já existe um cadastro com mesmo CPF',
     }),
     (0, common_1.Post)('step2'),
     __param(0, (0, common_1.Body)()),
