@@ -41,6 +41,12 @@ export class User {
   crmNumber?: string;
 
   @ApiProperty({
+    description: 'Número do CPF do usuário',
+    required: true,
+  })
+  cpf: string;
+
+  @ApiProperty({
     description: 'Flag que indica se o cadastro do usuário está completo',
     required: true,
   })

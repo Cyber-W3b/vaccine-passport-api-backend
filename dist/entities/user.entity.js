@@ -60,6 +60,13 @@ __decorate([
 ], User.prototype, "crmNumber", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
+        description: 'Número do CPF do usuário',
+        required: true,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "cpf", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
         description: 'Flag que indica se o cadastro do usuário está completo',
         required: true,
     }),
