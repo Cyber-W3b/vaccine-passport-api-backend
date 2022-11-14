@@ -12,4 +12,5 @@ export declare class AuthService {
         token: string;
         user: import(".prisma/client").User;
     }>;
+    logout(token: string): Promise<void>;
 }
