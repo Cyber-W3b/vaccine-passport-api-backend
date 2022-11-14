@@ -6,6 +6,7 @@ import {
   Req,
   NotFoundException,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupService } from '../signup/signup.service';
@@ -99,5 +100,26 @@ export class AuthController {
   @Get('whoami')
   async whoami(@Req() req) {
     return req.user.data;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary:
+      'Verifica o token e encerra a sessão, invalidando o token correspondente.',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Logout realizado com sucesso',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Não autorizado',
+  })
+  @ApiSecurity('JWT Bearer')
+  @HttpCode(204)
+  @Post('logout')
+  async logout(@Req() req) {
+    await this.authService.logout(req.user.token);
+    return;
   }
 }

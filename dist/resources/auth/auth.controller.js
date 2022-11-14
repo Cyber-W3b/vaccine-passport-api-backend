@@ -43,6 +43,10 @@ let AuthController = class AuthController {
     async whoami(req) {
         return req.user.data;
     }
+    async logout(req) {
+        await this.authService.logout(req.user.token);
+        return;
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({
@@ -109,6 +113,27 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "whoami", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Verifica o token e encerra a sessão, invalidando o token correspondente.',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 204,
+        description: 'Logout realizado com sucesso',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 401,
+        description: 'Não autorizado',
+    }),
+    (0, swagger_1.ApiSecurity)('JWT Bearer'),
+    (0, common_1.HttpCode)(204),
+    (0, common_1.Post)('logout'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     (0, swagger_1.ApiTags)('Login'),

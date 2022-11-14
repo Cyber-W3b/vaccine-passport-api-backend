@@ -72,6 +72,13 @@ let AuthService = class AuthService {
             user: user,
         };
     }
+    async logout(token) {
+        await this.prisma.tokensInvalidos.create({
+            data: {
+                token: token,
+            },
+        });
+    }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),

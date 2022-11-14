@@ -85,4 +85,17 @@ export class AuthService {
       user: user,
     };
   }
+
+  /**
+   * Faz o logout da sessão
+   * @param token Token
+   */
+  async logout(token: string) {
+    // coloca o token na lista de tokens ignorados
+    await this.prisma.tokensInvalidos.create({
+      data: {
+        token: token,
+      },
+    });
+  }
 }

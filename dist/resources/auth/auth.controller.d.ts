@@ -15,4 +15,5 @@ export declare class AuthController {
         user: import(".prisma/client").User;
     }>;
     whoami(req: any): Promise<any>;
+    logout(req: any): Promise<void>;
 }
