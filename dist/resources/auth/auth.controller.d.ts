@@ -14,4 +14,5 @@ export declare class AuthController {
         token: string;
         user: import(".prisma/client").User;
     }>;
+    whoami(req: any): Promise<any>;
 }

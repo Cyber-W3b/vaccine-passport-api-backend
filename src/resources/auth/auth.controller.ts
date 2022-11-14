@@ -3,16 +3,22 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
+  Req,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupService } from '../signup/signup.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { LoginStep1Dto } from './dto/login.step1.dto';
 import { LoginStep2Dto } from './dto/login.step2.dto';
+import { User } from '../../entities/user.entity';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 @ApiTags('Login')
@@ -74,5 +80,24 @@ export class AuthController {
   @Post('step2')
   async step2(@Body() dto: LoginStep2Dto) {
     return await this.authService.step2(dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Verifica o token e devolve os dados do usuário logado',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Resposta com os dados do usuário',
+    type: () => User,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Não autorizado',
+  })
+  @ApiSecurity('JWT Bearer')
+  @Get('whoami')
+  async whoami(@Req() req) {
+    return req.user.data;
   }
 }

@@ -19,6 +19,8 @@ const signup_service_1 = require("../signup/signup.service");
 const swagger_1 = require("@nestjs/swagger");
 const login_step1_dto_1 = require("./dto/login.step1.dto");
 const login_step2_dto_1 = require("./dto/login.step2.dto");
+const user_entity_1 = require("../../entities/user.entity");
+const jwt_auth_guard_1 = require("./jwt-auth.guard");
 let AuthController = class AuthController {
     constructor(authService, signupService) {
         this.authService = authService;
@@ -37,6 +39,9 @@ let AuthController = class AuthController {
     }
     async step2(dto) {
         return await this.authService.step2(dto);
+    }
+    async whoami(req) {
+        return req.user.data;
     }
 };
 __decorate([
@@ -83,6 +88,27 @@ __decorate([
     __metadata("design:paramtypes", [login_step2_dto_1.LoginStep2Dto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "step2", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Verifica o token e devolve os dados do usuário logado',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Resposta com os dados do usuário',
+        type: () => user_entity_1.User,
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 401,
+        description: 'Não autorizado',
+    }),
+    (0, swagger_1.ApiSecurity)('JWT Bearer'),
+    (0, common_1.Get)('whoami'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "whoami", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     (0, swagger_1.ApiTags)('Login'),
