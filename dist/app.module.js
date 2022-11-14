@@ -13,6 +13,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const signup_module_1 = require("./resources/signup/signup.module");
 const auth_module_1 = require("./resources/auth/auth.module");
+const nft_image_module_1 = require("./resources/nft-image/nft-image.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -23,6 +24,7 @@ AppModule = __decorate([
             }),
             signup_module_1.SignupModule,
             auth_module_1.AuthModule,
+            nft_image_module_1.NftImageModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
