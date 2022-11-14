@@ -63,7 +63,7 @@ __decorate([
 ], AuthController.prototype, "step1", null);
 __decorate([
     (0, swagger_1.ApiOperation)({
-        summary: 'Realiza o token do usuário por meio do token enviado por e-mail',
+        summary: 'Step 2 - Realiza o token do usuário por meio do token enviado por e-mail',
     }),
     (0, swagger_1.ApiResponse)({
         status: 200,

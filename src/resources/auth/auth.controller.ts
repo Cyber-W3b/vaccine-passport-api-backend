@@ -55,7 +55,8 @@ export class AuthController {
   }
 
   @ApiOperation({
-    summary: 'Realiza o token do usuário por meio do token enviado por e-mail',
+    summary:
+      'Step 2 - Realiza o token do usuário por meio do token enviado por e-mail',
   })
   @ApiResponse({
     status: 200,

@@ -13,24 +13,7 @@ import { JwtStrategy } from './jwt.strategy';
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      imports: [
-        ConfigModule,
-        JwtModule.registerAsync({
-          useFactory: (
-            config: any = process.env,
-            keypair = KeypairModule.getKeyPair(),
-          ) => {
-            return {
-              privateKey: keypair.private,
-              publicKey: keypair.public,
-              signOptions: {
-                expiresIn: config.JWT_EXPIRE_MINUTES + 'm',
-              },
-            };
-          },
-          imports: [ConfigModule, KeypairModule],
-        }),
-      ],
+      imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get('MAIL_HOST'),
@@ -48,14 +31,23 @@ import { JwtStrategy } from './jwt.strategy';
       inject: [ConfigService],
     }),
     ConfigModule.forRoot(),
+    JwtModule.registerAsync({
+      useFactory: (
+        config: any = process.env,
+        keypair = KeypairModule.getKeyPair(),
+      ) => {
+        return {
+          privateKey: keypair.private,
+          publicKey: keypair.public,
+          signOptions: {
+            expiresIn: config.JWT_EXPIRE_MINUTES + 'm',
+          },
+        };
+      },
+      imports: [ConfigModule, KeypairModule],
+    }),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    SignupService,
-    JwtStrategy,
-    JwtService,
-    PrismaService,
-  ],
+  providers: [AuthService, SignupService, JwtStrategy, PrismaService],
 })
 export class AuthModule {}

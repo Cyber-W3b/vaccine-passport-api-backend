@@ -23,21 +23,7 @@ AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mailer_1.MailerModule.forRootAsync({
-                imports: [
-                    config_1.ConfigModule,
-                    jwt_1.JwtModule.registerAsync({
-                        useFactory: (config = process.env, keypair = keypair_module_1.KeypairModule.getKeyPair()) => {
-                            return {
-                                privateKey: keypair.private,
-                                publicKey: keypair.public,
-                                signOptions: {
-                                    expiresIn: config.JWT_EXPIRE_MINUTES + 'm',
-                                },
-                            };
-                        },
-                        imports: [config_1.ConfigModule, keypair_module_1.KeypairModule],
-                    }),
-                ],
+                imports: [config_1.ConfigModule],
                 useFactory: async (config) => ({
                     transport: {
                         host: config.get('MAIL_HOST'),
@@ -55,15 +41,21 @@ AuthModule = __decorate([
                 inject: [config_1.ConfigService],
             }),
             config_1.ConfigModule.forRoot(),
+            jwt_1.JwtModule.registerAsync({
+                useFactory: (config = process.env, keypair = keypair_module_1.KeypairModule.getKeyPair()) => {
+                    return {
+                        privateKey: keypair.private,
+                        publicKey: keypair.public,
+                        signOptions: {
+                            expiresIn: config.JWT_EXPIRE_MINUTES + 'm',
+                        },
+                    };
+                },
+                imports: [config_1.ConfigModule, keypair_module_1.KeypairModule],
+            }),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [
-            auth_service_1.AuthService,
-            signup_service_1.SignupService,
-            jwt_strategy_1.JwtStrategy,
-            jwt_1.JwtService,
-            prisma_service_1.PrismaService,
-        ],
+        providers: [auth_service_1.AuthService, signup_service_1.SignupService, jwt_strategy_1.JwtStrategy, prisma_service_1.PrismaService],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

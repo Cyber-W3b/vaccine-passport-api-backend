@@ -59,10 +59,16 @@ let AuthService = class AuthService {
                 cpf: token.cpf,
             },
         });
+        const jwt = this.jwtService.sign({
+            sub: user.wallet,
+        });
+        await this.prisma.tokenEmail.delete({
+            where: {
+                id: token.id,
+            },
+        });
         return {
-            token: this.jwtService.sign({
-                sub: user.wallet,
-            }),
+            token: jwt,
             user: user,
         };
     }
