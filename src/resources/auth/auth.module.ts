@@ -6,11 +6,31 @@ import { SignupService } from '../signup/signup.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
+import { KeypairModule } from '../../lib/keypair/keypair.module';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [
+        ConfigModule,
+        JwtModule.registerAsync({
+          useFactory: (
+            config: any = process.env,
+            keypair = KeypairModule.getKeyPair(),
+          ) => {
+            return {
+              privateKey: keypair.private,
+              publicKey: keypair.public,
+              signOptions: {
+                expiresIn: config.JWT_EXPIRE_MINUTES + 'm',
+              },
+            };
+          },
+          imports: [ConfigModule, KeypairModule],
+        }),
+      ],
       useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get('MAIL_HOST'),
@@ -30,6 +50,6 @@ import { join } from 'path';
     ConfigModule.forRoot(),
   ],
   controllers: [AuthController],
-  providers: [AuthService, SignupService, PrismaService],
+  providers: [AuthService, SignupService, JwtStrategy, PrismaService],
 })
 export class AuthModule {}

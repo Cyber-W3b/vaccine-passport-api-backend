@@ -14,13 +14,30 @@ const prisma_service_1 = require("../../prisma.service");
 const signup_service_1 = require("../signup/signup.service");
 const mailer_1 = require("@nestjs-modules/mailer");
 const config_1 = require("@nestjs/config");
+const keypair_module_1 = require("../../lib/keypair/keypair.module");
+const jwt_1 = require("@nestjs/jwt");
+const jwt_strategy_1 = require("./jwt.strategy");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mailer_1.MailerModule.forRootAsync({
-                imports: [config_1.ConfigModule],
+                imports: [
+                    config_1.ConfigModule,
+                    jwt_1.JwtModule.registerAsync({
+                        useFactory: (config = process.env, keypair = keypair_module_1.KeypairModule.getKeyPair()) => {
+                            return {
+                                privateKey: keypair.private,
+                                publicKey: keypair.public,
+                                signOptions: {
+                                    expiresIn: config.JWT_EXPIRE_MINUTES + 'm',
+                                },
+                            };
+                        },
+                        imports: [config_1.ConfigModule, keypair_module_1.KeypairModule],
+                    }),
+                ],
                 useFactory: async (config) => ({
                     transport: {
                         host: config.get('MAIL_HOST'),
@@ -40,7 +57,7 @@ AuthModule = __decorate([
             config_1.ConfigModule.forRoot(),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, signup_service_1.SignupService, prisma_service_1.PrismaService],
+        providers: [auth_service_1.AuthService, signup_service_1.SignupService, jwt_strategy_1.JwtStrategy, prisma_service_1.PrismaService],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;
