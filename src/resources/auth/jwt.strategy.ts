@@ -29,11 +29,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * @param payload
    */
   async validate(request: Request, payload: any) {
-    // se o sub não é um número, nega a requisição, pois os usuários são apenas números
-    if (isNaN(payload.sub)) {
-      throw new UnauthorizedException();
-    }
-
     const user = await this.prisma.user.findUnique({
           where: {
             wallet: payload.sub,

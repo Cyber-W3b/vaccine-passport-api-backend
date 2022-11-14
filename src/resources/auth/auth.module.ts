@@ -7,7 +7,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { KeypairModule } from '../../lib/keypair/keypair.module';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
@@ -50,6 +50,12 @@ import { JwtStrategy } from './jwt.strategy';
     ConfigModule.forRoot(),
   ],
   controllers: [AuthController],
-  providers: [AuthService, SignupService, JwtStrategy, PrismaService],
+  providers: [
+    AuthService,
+    SignupService,
+    JwtStrategy,
+    JwtService,
+    PrismaService,
+  ],
 })
 export class AuthModule {}

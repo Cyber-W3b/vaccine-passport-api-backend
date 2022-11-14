@@ -18,6 +18,7 @@ const auth_service_1 = require("./auth.service");
 const signup_service_1 = require("../signup/signup.service");
 const swagger_1 = require("@nestjs/swagger");
 const login_step1_dto_1 = require("./dto/login.step1.dto");
+const login_step2_dto_1 = require("./dto/login.step2.dto");
 let AuthController = class AuthController {
     constructor(authService, signupService) {
         this.authService = authService;
@@ -33,6 +34,9 @@ let AuthController = class AuthController {
             status: true,
             message: 'Link mágico enviado por e-mail do usuário',
         };
+    }
+    async step2(dto) {
+        return await this.authService.step2(dto);
     }
 };
 __decorate([
@@ -57,6 +61,28 @@ __decorate([
     __metadata("design:paramtypes", [login_step1_dto_1.LoginStep1Dto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "step1", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Realiza o token do usuário por meio do token enviado por e-mail',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Token do usuário validado e gerado o token JWT para interações futuras',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 400,
+        description: 'Requisição inválida',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 404,
+        description: 'Token não encontrado ou expirado',
+    }),
+    (0, common_1.Post)('step2'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [login_step2_dto_1.LoginStep2Dto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "step2", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     (0, swagger_1.ApiTags)('Login'),

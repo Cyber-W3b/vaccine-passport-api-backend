@@ -13,10 +13,12 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma.service");
 const mailer_1 = require("@nestjs-modules/mailer");
+const jwt_1 = require("@nestjs/jwt");
 let AuthService = class AuthService {
-    constructor(prisma, mailerService) {
+    constructor(prisma, mailerService, jwtService) {
         this.prisma = prisma;
         this.mailerService = mailerService;
+        this.jwtService = jwtService;
     }
     async step1(cpf) {
         const user = await this.prisma.user.findFirstOrThrow({
@@ -43,11 +45,33 @@ let AuthService = class AuthService {
         });
         return true;
     }
+    async step2(dto) {
+        const token = await this.prisma.tokenEmail.findFirst({
+            where: {
+                token: dto.token,
+            },
+        });
+        if (!token) {
+            throw new common_1.NotFoundException('Token não encontrado');
+        }
+        const user = await this.prisma.user.findFirstOrThrow({
+            where: {
+                cpf: token.cpf,
+            },
+        });
+        return {
+            token: this.jwtService.sign({
+                sub: user.wallet,
+            }),
+            user: user,
+        };
+    }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        mailer_1.MailerService])
+        mailer_1.MailerService,
+        jwt_1.JwtService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

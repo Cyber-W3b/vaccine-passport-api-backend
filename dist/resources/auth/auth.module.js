@@ -57,7 +57,13 @@ AuthModule = __decorate([
             config_1.ConfigModule.forRoot(),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, signup_service_1.SignupService, jwt_strategy_1.JwtStrategy, prisma_service_1.PrismaService],
+        providers: [
+            auth_service_1.AuthService,
+            signup_service_1.SignupService,
+            jwt_strategy_1.JwtStrategy,
+            jwt_1.JwtService,
+            prisma_service_1.PrismaService,
+        ],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

@@ -26,9 +26,6 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         this.prisma = prisma;
     }
     async validate(request, payload) {
-        if (isNaN(payload.sub)) {
-            throw new common_1.UnauthorizedException();
-        }
         const user = await this.prisma.user.findUnique({
             where: {
                 wallet: payload.sub,

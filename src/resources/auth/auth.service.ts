@@ -1,12 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Get, Injectable, NotFoundException, Post } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { MailerService } from '@nestjs-modules/mailer';
+import { LoginStep2Dto } from './dto/login.step2.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private mailerService: MailerService,
+    private jwtService: JwtService,
   ) {}
 
   /**
@@ -44,5 +47,34 @@ export class AuthService {
     });
 
     return true;
+  }
+
+  /**
+   * Realiza o passo 2 de autenticação
+   * @param dto
+   */
+  async step2(dto: LoginStep2Dto) {
+    const token = await this.prisma.tokenEmail.findFirst({
+      where: {
+        token: dto.token,
+      },
+    });
+
+    if (!token) {
+      throw new NotFoundException('Token não encontrado');
+    }
+
+    const user = await this.prisma.user.findFirstOrThrow({
+      where: {
+        cpf: token.cpf,
+      },
+    });
+
+    return {
+      token: this.jwtService.sign({
+        sub: user.wallet,
+      }),
+      user: user,
+    };
   }
 }

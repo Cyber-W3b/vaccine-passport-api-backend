@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { SignupService } from '../signup/signup.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginStep1Dto } from './dto/login.step1.dto';
+import { LoginStep2Dto } from './dto/login.step2.dto';
 
 @Controller('auth')
 @ApiTags('Login')
@@ -51,5 +52,26 @@ export class AuthController {
       status: true,
       message: 'Link mágico enviado por e-mail do usuário',
     };
+  }
+
+  @ApiOperation({
+    summary: 'Realiza o token do usuário por meio do token enviado por e-mail',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Token do usuário validado e gerado o token JWT para interações futuras',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Requisição inválida',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Token não encontrado ou expirado',
+  })
+  @Post('step2')
+  async step2(@Body() dto: LoginStep2Dto) {
+    return await this.authService.step2(dto);
   }
 }
