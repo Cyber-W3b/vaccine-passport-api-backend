@@ -6,7 +6,7 @@ export class User {
     required: true,
     type: 'string',
   })
-  nome?: string;
+  name?: string;
 
   @ApiProperty({
     description: 'Email do usuário',
