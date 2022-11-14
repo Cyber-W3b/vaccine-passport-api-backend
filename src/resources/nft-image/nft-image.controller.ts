@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Req, Res } from '@nestjs/common';
 import { NftImageService } from './nft-image.service';
 import { ApiOperation, ApiResponse, ApiSecurity } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -36,7 +36,27 @@ export class NftImageController {
   })
   @ApiSecurity('JWT Bearer')
   @Post('generate')
-  async generateNftImage(@Body() dto: GenerateNftImageDto, @Req() req) {
-    return await this.nftImageService.generateNftImage(dto, req.user.data);
+  async generateNftImage(
+    @Body() dto: GenerateNftImageDto,
+    @Req() req,
+    @Res() res,
+  ) {
+    //verifica se o usuário é um médico ou enfermeiro
+    if (!req.user.data.corenNumber && !req.user.data.crmNumber) {
+      return res.status(403).json({
+        message: 'Usuário não é um médico ou enfermeiro',
+      });
+    }
+    const image = await this.nftImageService.generateNftImage(
+      dto,
+      req.user.data,
+    );
+
+    return res
+      .status(200)
+      .set({
+        'Content-Type': 'image/png',
+      })
+      .send(image);
   }
 }

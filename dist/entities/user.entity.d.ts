@@ -1,5 +1,5 @@
 export declare class User {
-    nome?: string;
+    name?: string;
     email?: string;
     wallet?: string;
     susCardNumber?: string;

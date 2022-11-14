@@ -20,7 +20,7 @@ __decorate([
         type: 'string',
     }),
     __metadata("design:type", String)
-], User.prototype, "nome", void 0);
+], User.prototype, "name", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Email do usuário',
