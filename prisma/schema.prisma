@@ -29,3 +29,8 @@ model TokenEmail{
     cpf     String     @db.VarChar(11)
     createdAt DateTime @default(now())
 }
+
+model TokensInvalidos {
+  token     String   @id @db.VarChar(256)
+  createdAt DateTime @default(now())
+}
